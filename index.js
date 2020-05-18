@@ -36,11 +36,8 @@ var init = function(option){
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end()
         } else {
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
             if(req.headers['token']===option.acceptToken && req.method===option.method) {
                 // 验证成功
-
-
                 var post = '';
                 // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
                 req.on('data', function(chunk){
@@ -72,9 +69,7 @@ var init = function(option){
                             msg:'need msg'
                         }));
                     }
-
                 });
-
             } else {
                 res.writeHead(402, { 'Content-Type': 'text/plain' });
                 res.end(JSON.stringify({
