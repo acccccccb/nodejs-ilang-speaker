@@ -20,8 +20,8 @@
     </div>
 </body>
 <script>
-    // var baseURL = 'http://192.168.1.4:9999';
-    var baseURL = 'http://localhost:9999';
+    var baseURL = 'http://192.168.1.4:9999';
+    // var baseURL = 'http://localhost:9999';
     $('#clear').click(function(){
         $('#msg').val('');
     });
@@ -29,7 +29,7 @@
         var msg = $('#msg').val();
         if(msg) {
             $.ajax({
-                url:baseURL + '/speaker?msg=' + msg,
+                url:baseURL + '/speaker',
                 method:"post",
                 dataType:'json',
                 headers:{

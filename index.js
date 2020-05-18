@@ -32,7 +32,6 @@ var init = function(option){
         res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
         res.setHeader('content-type', 'application/json');
 
-        console.log(req.method);
         if(req.method==='OPTIONS') {
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end()
@@ -40,19 +39,41 @@ var init = function(option){
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             if(req.headers['token']===option.acceptToken && req.method===option.method) {
                 // 验证成功
-                var query = req.url.split('?')[1];
-                var msg = query.split('=')[1];
 
-                res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end(JSON.stringify({
-                    success:true,
-                    code:200,
-                    msg:'success'
-                }));
-                // run().execute("ilang '" + msg + "'",function(){
-                //     res.writeHead(200, { 'Content-Type': 'text/plain' });
-                //     res.end(msg)
-                // })
+
+                var post = '';
+                // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
+                req.on('data', function(chunk){
+                    post += chunk;
+                });
+                // 在end事件触发后，通过querystring.parse将post解析为真正的POST请求格式，然后向客户端返回。
+                req.on('end', function(){
+                    var msg = post.split('=')[1];
+                    console.log(msg);
+                    if(msg) {
+                        res.writeHead(200, { 'Content-Type': 'text/plain' });
+                        res.end(JSON.stringify({
+                            success:true,
+                            code:200,
+                            msg:'success:'+msg
+                        }));
+                        run().execute("ilang '" + msg + "'",function(){
+                            res.writeHead(200, { 'Content-Type': 'text/plain' });
+                            res.end(JSON.stringify({
+                                success:true,
+                                code:200,
+                                msg:'success'
+                            }));
+                        })
+                    } else {
+                        res.end(JSON.stringify({
+                            success:false,
+                            code:200,
+                            msg:'need msg'
+                        }));
+                    }
+
+                });
 
             } else {
                 res.writeHead(402, { 'Content-Type': 'text/plain' });
