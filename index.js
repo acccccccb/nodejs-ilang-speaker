@@ -48,14 +48,7 @@ var init = function(option){
                     var msg = post.split('=')[1];
                     console.log(msg);
                     if(msg) {
-                        res.writeHead(200, { 'Content-Type': 'text/plain' });
-                        res.end(JSON.stringify({
-                            success:true,
-                            code:200,
-                            msg:'success:'+msg
-                        }));
                         run().execute("ilang '" + msg + "'",function(){
-                            res.writeHead(200, { 'Content-Type': 'text/plain' });
                             res.end(JSON.stringify({
                                 success:true,
                                 code:200,
@@ -71,7 +64,6 @@ var init = function(option){
                     }
                 });
             } else {
-                res.writeHead(402, { 'Content-Type': 'text/plain' });
                 res.end(JSON.stringify({
                     success:false,
                     code:402,
