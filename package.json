@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-ilang-speaker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acccccccb/nodejs-ilang-speaker.git"
+  },
+  "author": "acccccccb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acccccccb/nodejs-ilang-speaker/issues"
+  },
+  "homepage": "https://github.com/acccccccb/nodejs-ilang-speaker#readme"
+}
