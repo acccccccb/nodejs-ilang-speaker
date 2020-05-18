@@ -29,6 +29,7 @@
     $('#send').click(function(){
         var msg = $('#msg').val();
         if(msg) {
+            $('#send').attr('disabled',true);
             $.ajax({
                 url:baseURL + '/speaker',
                 method:"post",
@@ -41,6 +42,12 @@
                 },
                 success:function(res){
                     console.log(res);
+                },
+                error:function(){
+                    alert('发送失败');
+                },
+                complete:function(){
+                    $('#send').attr('disabled',false);
                 }
             });
         }
