@@ -5,52 +5,138 @@
     <title>nodejs-ilang-speaker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
 </head>
 <body>
-    <div class="container" style="margin-top:30px;">
-        <div class="form-group">
-            <label for="exampleInputEmail1">信息：</label>
-            <textarea id="msg" rows="10" class="form-control" aria-label="With textarea"></textarea>
-        </div>
+    <div id="app" class="container" v-cloak>
+        <div class="msgBox" ref="msgBox">
+            <div v-for="item in chatRecord">
+                <div class="send" v-if="item.type=='send'">{{item.msg}}</div>
+                <div class="receive" v-if="item.type=='receive'">
+                    <div>
+                        {{item.msg['desc_obj'].result}}
+                    </div>
+                    <div v-if="item.msg.type=='joke'">
+                        {{item.msg['data_obj'][0].content}}
+                    </div>
+                    <div v-if="item.msg.type=='openweb'">
+                        <a :href="item.msg['data_obj'][0].url" target="_blank">{{item.msg['data_obj'][0].url}}</a>
+                    </div>
+                    <div v-if="item.msg.type=='cooking'">
+                        {{item.msg['data_obj'][0].content}}
+                    </div>
+                    <div v-if="item.msg.type=='baike'">
+                        {{item.msg['data_obj'][0].name}}
+                        <div class="baikeImg">
+                            <img :src="item.msg['data_obj'][0].photo_url" alt="">
+                        </div>
+                        {{item.msg['data_obj'][0].description}}
+                    </div>
+                    <div v-if="item.msg.type=='selection'">
+                        <div v-for="childItem in item.msg['data_obj']" class="newsItem">
+                            <div v-if="item.msg['desc_obj'].type=='news'">
+                                <div class="newsTitle"><a :href="childItem.ref_url" target="_blank">{{childItem.title}}</a></div>
+                                <div class="newsTime">{{childItem.time}}</div>
+                                <div style="font-size:0.8em;">{{childItem.detail}}...</div>
+                            </div>
 
-        <div class="input-group">
-            <button type="button" class="btn btn-primary btn-block" id="send">发送</button>
-            <button type="button" class="btn btn-outline-dark btn-block" id="clear">清空</button>
+                            <div v-if="item.msg['desc_obj'].type=='poem'">
+                                <div>《{{childItem['poem_name']}}》- {{childItem.author}}</div>
+                            </div>
+                            <div v-if="item.msg['desc_obj'].type=='baike'">
+                                <div>找到{{item.msg['data_obj'].length}}条相关内容：</div>
+                                <div>{{childItem['name']}}</div>
+                                <div>{{childItem['desc']}}</div>
+                            </div>
+                            <div v-if="item.msg['desc_obj'].type=='hotel'">
+                                <div><a target="_blank" :href="childItem['description_url']">{{childItem['hotel_name']}}</a> 评分：{{childItem['ctrip_rating']}}</div>
+                                <div>价格：{{childItem['floor_price']}}-{{childItem['max_price']}}</div>
+                                <div><img :src="childItem['hotel_image']" :alt="childItem['hotel_name']"></div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div v-if="item.msg.type=='news'">
+                        {{item.msg['data_obj'][0].detail}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="form-item sendMessageBox text-right">
+            <textarea :value="msg" class="form-control msgTextarea" @input="catchInput" placeholder="发送消息" cols="30" rows="3"></textarea>
+            <button :disabled="msg==''" class="btn btn-primary btn-sm sendBtn" type="button" ref="sendMessage" @click="sendMessage">发送 (Ctrl+Enter)</button>
         </div>
     </div>
 </body>
 <script>
-    var baseURL = 'http://192.168.1.4:9999';
-    // var baseURL = 'http://localhost:9999';
-    $('#clear').click(function(){
-        $('#msg').val('');
-    });
-    $('#send').click(function(){
-        var msg = $('#msg').val();
-        if(msg) {
-            $('#send').attr('disabled',true);
-            $.ajax({
-                url:baseURL + '/speaker',
-                method:"post",
-                dataType:'json',
-                headers:{
-                    token:'abc'
-                },
-                data:{
-                    msg:msg
-                },
-                success:function(res){
-                    console.log(res);
-                },
-                error:function(){
-                    alert('发送失败');
-                },
-                complete:function(){
-                    $('#send').attr('disabled',false);
+    new Vue({
+        el:'#app',
+        data(){
+            return {
+                // baseURL:'http://192.168.1.4:9999',
+                baseURL:'http://localhost:9999',
+                token:'yourtoken',
+                title:'nodejs-ilang-speaker',
+                msg:'',
+                chatRecord:[],
+            }
+        },
+        mounted(){
+            let _this = this;
+            $(window).keydown(function (event) {
+                // 监听 Ctrl + Enter
+                if (event.ctrlKey && event.keyCode == 13) {
+                    _this.sendMessage();
                 }
             });
-        }
+        },
+        methods:{
+            catchInput:function(e) {
+                this.msg = e.target.value;
+            },
+            sendMessage:function(){
+                let _this = this;
+                let msg = this.msg;
+                if(msg) {
+                    this.chatRecord.push({
+                        type:'send',
+                        msg:msg
+                    });
+                    $.ajax({
+                        url:_this.baseURL + '/speaker',
+                        method:"post",
+                        dataType:'json',
+                        headers:{
+                            token:_this.token
+                        },
+                        data:{
+                            msg:msg
+                        },
+                        success:function(res){
+                            console.log(res);
+                            if(res.success==true) {
+                                _this.msg = "";
+                                _this.chatRecord.push({
+                                    type:'receive',
+                                    msg:res.msg
+                                });
+                                _this.$nextTick(()=>{
+                                    let $msgBox = _this.$refs.msgBox;
+                                    $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);
+                                });
+                            }
+                        },
+                        error:function(){
+                            alert('发送失败');
+                        }
+                    });
+                }
+            },
+        },
     });
 </script>
 </html>

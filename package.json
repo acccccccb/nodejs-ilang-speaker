@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/acccccccb/nodejs-ilang-speaker/issues"
   },
-  "homepage": "https://github.com/acccccccb/nodejs-ilang-speaker#readme"
+  "homepage": "https://github.com/acccccccb/nodejs-ilang-speaker#readme",
+  "devDependencies": {
+    "crypto": "^1.0.1",
+    "iconv-lite": "^0.5.1",
+    "md5-node": "^1.0.1"
+  }
 }

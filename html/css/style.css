@@ -1,0 +1,69 @@
+html,body,.container {
+    height:100%;
+    background: #f4f4f4;
+}
+[v-cloak]{
+    display: none
+}
+.msgBox {
+    height:75%;
+    margin-bottom:15px;
+    overflow-y:scroll;
+    padding-top:15px;
+    padding-bottom:15px;
+}
+.send,.receive {
+    padding:15px;
+    margin-bottom:15px;
+    border-radius: 4px;
+    width:90%;
+    text-align: justify;
+    word-break: break-all;
+}
+.send {
+    background:#fff;
+    float:left;
+}
+.receive {
+    background: #53dd22;
+    float:right;
+}
+.sendMessageBox {
+    position:absolute;
+    width:100%;
+    height:25%;
+    bottom:0;
+    left:0;
+    right:0;
+    padding:15px;
+    background:#fff;
+}
+.msgTextarea {
+    border:none;
+    resize : none;
+}
+.msgTextarea:focus {
+    outline: none !important;
+    border: none;
+    box-shadow: none;
+}
+.sendBtn {
+    margin-top:15px;
+}
+.newsItem {
+    margin-top:15px;
+}
+.newsTitle {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    height:1.5em;
+    line-height:1.5em;
+}
+.newsTime {
+    font-size:0.8em;
+}
+.baikeImg {
+    max-width:60%;
+    margin-top:15px;
+    margin-bottom:15px;
+}
