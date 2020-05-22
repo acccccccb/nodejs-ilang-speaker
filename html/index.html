@@ -32,6 +32,24 @@
                         <div class="baikeImg" v-if="item.msg['data_obj'][0].photo_url">
                             <img :src="item.msg['data_obj'][0].photo_url" alt="">
                         </div>
+                        <div v-if="item.msg['data_obj'][0]['type']=='general'">
+                            <div >
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm table-condensed ">
+                                        <thead>
+                                        <tr>
+                                            <th v-for="tabItem in item.msg['data_obj'][0]['field_name']">{{tabItem}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td v-for="tabItem in item.msg['data_obj'][0]['field_value']">{{tabItem}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         <div v-if="item.msg['data_obj'][0]['categorylist']">
                             <div>分类：</div>
                             <div v-for="categoryItem in item.msg['data_obj'][0]['categorylist']">
