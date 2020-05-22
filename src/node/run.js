@@ -6,6 +6,7 @@ var crypto = require('crypto');
 var md5 = require('md5-node');
 var exec = require('child_process').exec;
 var os=require('os');
+var encoding = require('encoding');
 var fs=require('fs-extra');
 
 
@@ -123,7 +124,15 @@ var init = function(){
                     var msg = post.split('=')[1];
                     if(msg) {
                         setToRobot(msg,function(result){
-                            run().execute("ilang '" + result.data.nli[0]['desc_obj']['result'] + "'",function(){
+									var receiveMsg = result.data.nli[0]['desc_obj']['result'];
+console.log(receiveMsg);
+
+// receiveMsg = iconv.decode(receiveMsg, "utf8");
+// receiveMsg = encoding.convert(receiveMsg,'cp936','utf-8');
+// receiveMsg = receiveMsg.encode('utf8');
+// receiveMsg = "触发";
+
+                            run().execute('ilang "' + receiveMsg + '"',function(){
                                 res.end(JSON.stringify({
                                     success:true,
                                     code:200,

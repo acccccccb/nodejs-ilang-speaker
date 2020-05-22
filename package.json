@@ -20,6 +20,7 @@
   "homepage": "https://github.com/acccccccb/nodejs-ilang-speaker#readme",
   "devDependencies": {
     "crypto": "^1.0.1",
+    "encoding": "^0.1.12",
     "fs-extra": "^9.0.0",
     "iconv-lite": "^0.5.1",
     "md5-node": "^1.0.1"
