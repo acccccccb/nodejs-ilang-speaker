@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var md5 = require('md5-node');
 var exec = require('child_process').exec;
 var os=require('os');
+var fs=require('fs-extra');
 
 
 function func(){}
@@ -65,6 +66,40 @@ function setToRobot(msg,callback){
     });
 };
 var init = function(option){
+    var webPort = 8899;
+    http.createServer(function(req, res){
+        if(req.method==='GET') {
+            var file = '';
+            var ContentType = '';
+            if(req.url == '/') {
+                file = '/index.html';
+                ContentType = 'text/html';
+            } else {
+                file = req.url;
+                var arr = req.url.split('.');
+                var fileType = arr[arr.length-1];
+                if(fileType=='js') {
+                    ContentType = 'application/javascript'
+                }
+                if(fileType=='css') {
+                    ContentType = 'text/css'
+                }
+            }
+            fs.readFile('./html' + file,function(err,data){
+                if(err) {
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    res.end("404 Not found");
+                } else {
+                    res.writeHead(200, { 'Content-Type': ContentType });
+                    res.end(data);
+                }
+            })
+        } else {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end('<h1>err</h1>')
+        }
+     }).listen(webPort);
+    console.log('web service start on ' + webPort);
     http.createServer(function(req, res){
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Headers', 'token');
@@ -115,7 +150,7 @@ var init = function(option){
         }
 
     }).listen(option.port);
-    console.log('success! port:' + option.port);
+    console.log('chat service started! port:' + option.port);
 };
 
 init({
