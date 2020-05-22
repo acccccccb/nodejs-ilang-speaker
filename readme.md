@@ -5,7 +5,7 @@
 
 ### 配置
 复制 ./src/node/config.sample.js 为 config.js
-修改config.js文件，可以只修改aiConfig，appsecret和appkey可以在 https://cn.olami.ai获得
+修改config.js文件，可以只修改aiConfig，appsecret和appkey可以在 https://cn.olami.ai 获得
 ```javascript
     var aiConfig = {
         appsecret:'your appsecret',
