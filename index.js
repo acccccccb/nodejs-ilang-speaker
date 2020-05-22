@@ -87,19 +87,15 @@ var init = function(option){
                     var msg = post.split('=')[1];
                     if(msg) {
                         setToRobot(msg,function(result){
-                            res.end(JSON.stringify({
-                                success:true,
-                                code:200,
-                                msg:result.data.nli[0]
-                            }));
+                            run().execute("ilang '" + result.data.nli[0]['desc_obj']['result'] + "'",function(){
+                                res.end(JSON.stringify({
+                                    success:true,
+                                    code:200,
+                                    msg:result.data.nli[0]
+                                }));
+                            })
                         });
-                        // run().execute("ilang '" + msg + "'",function(){
-                        //     res.end(JSON.stringify({
-                        //         success:true,
-                        //         code:200,
-                        //         msg:'success'
-                        //     }));
-                        // })
+
                     } else {
                         res.end(JSON.stringify({
                             success:false,

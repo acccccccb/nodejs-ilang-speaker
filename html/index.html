@@ -29,10 +29,18 @@
                     </div>
                     <div v-if="item.msg.type=='baike'">
                         {{item.msg['data_obj'][0].name}}
-                        <div class="baikeImg">
+                        <div class="baikeImg" v-if="item.msg['data_obj'][0].photo_url">
                             <img :src="item.msg['data_obj'][0].photo_url" alt="">
                         </div>
-                        {{item.msg['data_obj'][0].description}}
+                        <div v-if="item.msg['data_obj'][0]['categorylist']">
+                            <div>分类：</div>
+                            <div v-for="categoryItem in item.msg['data_obj'][0]['categorylist']">
+                                {{categoryItem}}
+                            </div>
+                        </div>
+                        <div v-if="item.msg['data_obj'][0].description">
+                            {{item.msg['data_obj'][0].description}}
+                        </div>
                     </div>
                     <div v-if="item.msg.type=='selection'">
                         <div v-for="childItem in item.msg['data_obj']" class="newsItem">
