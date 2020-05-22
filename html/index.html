@@ -132,6 +132,10 @@
                         type:'send',
                         msg:msg
                     });
+                    this.$nextTick(()=>{
+                        let $msgBox = _this.$refs.msgBox;
+                        $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);
+                    });
                     $.ajax({
                         url:_this.baseURL + '/speaker',
                         method:"post",
