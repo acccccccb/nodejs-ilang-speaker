@@ -13,9 +13,10 @@ var fs=require('fs-extra');
 function func(){}
 func.prototype = {
     execute:function(cmd,callback){
-        exec(cmd, function(error, stdout, stderr) {
+        exec(cmd, {encoding:'utf8'},function(error, stdout, stderr) {
             if(error){
                 console.log(cmd+ ' fail');
+					console.log(error);
                 if(callback && typeof callback === 'function') {
                     console.log(error);
                     callback(false);
@@ -131,7 +132,7 @@ console.log(receiveMsg);
 // receiveMsg = encoding.convert(receiveMsg,'cp936','utf-8');
 // receiveMsg = receiveMsg.encode('utf8');
 // receiveMsg = "触发";
-
+									var startFlag = "True";
                             run().execute('ilang "' + receiveMsg + '"',function(){
                                 res.end(JSON.stringify({
                                     success:true,

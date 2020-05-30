@@ -16,15 +16,16 @@ html,body,.container {
     padding:15px;
     margin-bottom:15px;
     border-radius: 4px;
-    width:90%;
+    max-width:90%;
+    clear:both;
     text-align: justify;
     word-break: break-all;
 }
-.send {
+.receive {
     background:#fff;
     float:left;
 }
-.receive {
+.send {
     background: #53dd22;
     float:right;
 }
