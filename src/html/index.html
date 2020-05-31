@@ -125,6 +125,22 @@
             catchInput:function(e) {
                 this.msg = e.target.value;
             },
+            sendToSpeaker:function(msg){
+				let _this = this;
+				if(msg && typeof msg == 'string') {
+					$.ajax({
+					url:_this.baseURL + '/speaker',
+                        method:"post",
+                        dataType:'json',
+                        headers:{
+                            token:_this.token
+                        },
+                        data:{
+                            msg:msg
+                        }
+					});
+				}				
+			},
             sendMessage:function(){
                 let _this = this;
                 let msg = this.msg;
@@ -136,10 +152,11 @@
                     });
                     this.$nextTick(()=>{
                         let $msgBox = _this.$refs.msgBox;
-                        $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);
+                        if(typeof $msgBox.scrollTo === 'function') { $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);}
+                        
                     });
                     $.ajax({
-                        url:_this.baseURL + '/speaker',
+                        url:_this.baseURL + '/botman',
                         method:"post",
                         dataType:'json',
                         headers:{
@@ -151,19 +168,25 @@
                         success:function(res){
                             console.log(res);
                             if(res.success==true) {
+								_this.sendToSpeaker(res.msg.desc_obj.result);
                                 _this.msg = "";
-				_this.blockSend = false;
+								_this.blockSend = false;
                                 _this.chatRecord.push({
                                     type:'receive',
                                     msg:res.msg
                                 });
                                 _this.$nextTick(()=>{
                                     let $msgBox = _this.$refs.msgBox;
-                                    $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);
+									if(typeof $msgBox.scrollTo === 'function') { $msgBox.scrollTo(0,document.body.scrollHeight*_this.chatRecord.length);}
                                 });
-                            }
+                              
+                            } else {
+								_this.blockSend = false;
+								alert('发送失败');
+							}
                         },
                         error:function(){
+							_this.blockSend = false;
                             alert('发送失败');
                         }
                     });

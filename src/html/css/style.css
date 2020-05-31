@@ -1,25 +1,29 @@
 html,body,.container {
     height:100%;
     background: #f4f4f4;
+	overflow:hidden;
 }
 [v-cloak]{
     display: none
 }
 .msgBox {
-    height:75%;
+    height:70%;
     margin-bottom:15px;
     overflow-y:scroll;
     padding-top:15px;
     padding-bottom:15px;
 }
 .send,.receive {
-    padding:15px;
+    padding:10px 15px;
     margin-bottom:15px;
     border-radius: 4px;
     max-width:90%;
     clear:both;
     text-align: justify;
     word-break: break-all;
+}
+.sendMessageBox textarea {
+	height:60%;
 }
 .receive {
     background:#fff;

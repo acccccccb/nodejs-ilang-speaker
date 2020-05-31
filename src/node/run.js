@@ -1,4 +1,4 @@
-var { aiConfig,servConfig,webConfig } = require('./config');
+var { aiConfig,servConfig,webConfig ,speakerConfig} = require('./config');
 var http = require('http');
 var https = require('https');
 var iconv = require("iconv-lite");
@@ -46,7 +46,6 @@ function setToRobot(msg,callback){
             "text":msg,
         }
     });
-    console.log(msg);
     var sign = appsecret + "api=" + api + "appkey=" + appkey + "timestamp=" + timestamp + appsecret;
     var url="https://cn.olami.ai/cloudservice/api?appkey="+ appkey +"&api="+ api +"&timestamp=" + timestamp + "&sign=" + md5(sign) + "&rq="+ rq + '&cusid' + cusid;
     https.get(url, function (res) {
@@ -108,13 +107,43 @@ var init = function(){
         res.setHeader('Access-Control-Allow-Headers', 'token');
         res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
         res.setHeader('content-type', 'application/json');
-
+		returnError = function(res){
+			//console.log(res);
+			res.end(JSON.stringify({
+                    success:false,
+                    code:402,
+                    msg:'fail'
+                }));
+		};
         if(req.method==='OPTIONS') {
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end()
         } else {
-            if(req.headers['token']===servConfig.acceptToken && req.method===servConfig.method) {
-                // 验证成功
+			console.log(req.url);
+			console.log(req.url===servConfig.url, req.headers['token']===servConfig.acceptToken , req.method===servConfig.method);
+			if(req.url===speakerConfig.url && req.headers['token']===speakerConfig.acceptToken && req.method===speakerConfig.method) {
+				console.log('speakerConfig');
+				var post = '';
+                req.on('data', function(chunk){
+                    post += chunk;
+                });
+					req.on('end', function(){
+						var msg = post.split('=')[1];
+						if(msg) {
+							run().execute('ilang "' + msg + '"');
+							res.end(JSON.stringify({
+                                    success:true,
+                                    code:200,
+                                    msg:msg
+                             }));
+						} else {
+							console.log('err1');
+							returnError(res)
+						}
+                   })
+				} else if (req.url===servConfig.url&& req.headers['token']===servConfig.acceptToken && req.method===servConfig.method) {
+				console.log('servConfig');
+					// 验证成功
                 var post = '';
                 // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到post变量中
                 req.on('data', function(chunk){
@@ -124,40 +153,26 @@ var init = function(){
                 req.on('end', function(){
                     var msg = post.split('=')[1];
                     if(msg) {
+						console.log('servConfig:' + msg);
                         setToRobot(msg,function(result){
+							console.log('setToRobot')
 									var receiveMsg = result.data.nli[0]['desc_obj']['result'];
-console.log(receiveMsg);
-
-// receiveMsg = iconv.decode(receiveMsg, "utf8");
-// receiveMsg = encoding.convert(receiveMsg,'cp936','utf-8');
-// receiveMsg = receiveMsg.encode('utf8');
-// receiveMsg = "触发";
-									var startFlag = "True";
-                            run().execute('ilang "' + receiveMsg + '"',function(){
-                                res.end(JSON.stringify({
-                                    success:true,
-                                    code:200,
-                                    msg:result.data.nli[0]
-                                }));
-                            })
+									res.end(JSON.stringify({
+										success:true,
+										code:200,
+										msg:result.data.nli[0]
+									}));
                         });
-
                     } else {
-                        res.end(JSON.stringify({
-                            success:false,
-                            code:200,
-                            msg:'need msg'
-                        }));
+						console.log('err3');
+                        returnError(res)
                     }
                 });
-            } else {
-                res.end(JSON.stringify({
-                    success:false,
-                    code:402,
-                    msg:'fail'
-                }));
-            }
-
+			}  else {
+				console.log('err4');
+				returnError(res)
+			}
+		
         }
 
     }).listen(servConfig.port);
