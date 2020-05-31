@@ -154,8 +154,38 @@ var init = function(){
                     var msg = post.split('=')[1];
                     if(msg) {
 						console.log('servConfig:' + msg);
-                        setToRobot(msg,function(result){
-							console.log('setToRobot')
+						if(msg == "light+on" ) {
+								run().execute('python /home/pi/raspberry-python/light.py 1',function(){
+									res.end(JSON.stringify({
+										success:true,
+										code:200,
+										msg:{
+												desc_obj:{
+														result:'light on success'
+												}
+										}
+								}));
+									});
+								
+								
+						} else if(msg == "light+off") {
+							
+							run().execute('python /home/pi/raspberry-python/light.py 0',function(){
+									res.end(JSON.stringify({
+										success:true,
+										code:200,
+										msg:{
+												desc_obj:{
+														result:'light off success'
+												}
+										}
+								}));
+									});
+								}
+						
+						else {
+								setToRobot(msg,function(result){
+								console.log('setToRobot')
 									var receiveMsg = result.data.nli[0]['desc_obj']['result'];
 									res.end(JSON.stringify({
 										success:true,
@@ -163,6 +193,8 @@ var init = function(){
 										msg:result.data.nli[0]
 									}));
                         });
+						}
+                        
                     } else {
 						console.log('err3');
                         returnError(res)
