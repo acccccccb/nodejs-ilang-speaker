@@ -10,7 +10,7 @@
 
 ##### appkey:7ce2867856994e7fb9f7112aab8ac86e
 
-##### appscreat:ff79cd95dd2e4612a51c44099078407b
+##### appscreat:bedd4ba8e69845a696257741d4d045b6
 
 ```javascript
     var aiConfig = {
